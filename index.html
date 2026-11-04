@@ -3,82 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Evenly – Bedtime that feels like a choice</title>
-<meta name="description" content="A sleep and wake app that gives you your evening back, so going to bed feels like a choice, not a loss. Join the early-access list.">
+<title>Evenly - Bedtime that feels like a choice</title>
+<meta name="description" content="A sleep and wake app that protects your evening and makes mornings worth getting up for. Join the early-access list.">
 <style>
-:root{--bg:#fbf7f1;--ink:#1d2433;--mute:#5d6577;--card:#fff;--line:#e8e1d6;--accent:#e8734a;--accent-ink:#fff;--night:#1b2340}
-@media (prefers-color-scheme:dark){:root{--bg:#121728;--ink:#f1ede6;--mute:#a4abbd;--card:#1b2340;--line:#2c3558;--accent:#f08a5d;--accent-ink:#1a1206;--night:#0c1020}}
+/* Palette: cool off-white + off-black + ONE accent (jade). Light and dark both defined.
+   Radius system: 12px for buttons and inputs, 20px for cards and panels. Nothing else. */
+:root{
+  --bg:#f2f5f4; --surface:#ffffff; --ink:#111816; --mute:#4a5651; --line:#d9e0dd;
+  --accent:#0b7a5c; --accent-ink:#ffffff; --accent-soft:#dcefe8; --deep:#0f2a24; --deep-ink:#e9f3ef;
+  --field:#ffffff; --field-line:#8a9893; --r-ui:12px; --r-card:20px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c1210; --surface:#141d1a; --ink:#eef3f1; --mute:#a9b7b1; --line:#25322e;
+    --accent:#3fcf9e; --accent-ink:#06120d; --accent-soft:#16352c; --deep:#0a1f19; --deep-ink:#e9f3ef;
+    --field:#0c1210; --field-line:#5d6e67;
+  }
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-.wrap{max-width:760px;margin:0 auto;padding:0 16px}
-header{padding:20px 0;font-weight:700;letter-spacing:.02em}
-h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.1;margin:28px 0 14px}
-.sub{font-size:1.15rem;color:var(--mute);max-width:36em}
-.btn{display:inline-block;border:0;cursor:pointer;background:var(--accent);color:var(--accent-ink);font:600 1rem inherit;padding:14px 22px;border-radius:12px}
-.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
-section{padding:36px 0}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
-.card h3{margin:0 0 6px;font-size:1.05rem}
-.card p{margin:0;color:var(--mute);font-size:.98rem}
-h2{font-size:1.5rem;margin:0 0 16px}
-.price .amt{font-size:1.7rem;font-weight:700}
-.price ul{padding-left:18px;color:var(--mute);margin:10px 0 16px;font-size:.95rem}
-form{background:var(--night);color:#f1ede6;border-radius:18px;padding:24px}
-form label{display:block;font-size:.9rem;margin-bottom:6px;color:#c9cfe0}
-form input[type=email]{width:100%;padding:13px;border-radius:10px;border:1px solid #39426a;background:#0f1530;color:#fff;font-size:1rem;margin-bottom:12px}
-.chosen{font-size:.9rem;color:#f4b99f;margin:0 0 12px}
-small{color:var(--mute)}
-form small{color:#a4abbd}
-footer{padding:30px 0 50px;color:var(--mute);font-size:.88rem}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-rounded,"SF Pro Rounded","Avenir Next","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+nav{height:64px;display:flex;align-items:center}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.02em}
+h1,h2,h3{letter-spacing:-.03em;margin:0}
+h1{font-size:clamp(2.2rem,5.4vw,3.6rem);line-height:1.05;font-weight:750}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.1;font-weight:700;margin-bottom:12px}
+h3{font-size:1.2rem;line-height:1.2;font-weight:650}
+p{margin:0}
+.lede{color:var(--mute);font-size:1.15rem;max-width:30em;margin-top:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border:1.5px solid transparent;cursor:pointer;
+  background:var(--accent);color:var(--accent-ink);font:600 1rem/1 inherit;padding:16px 26px;border-radius:var(--r-ui);
+  text-decoration:none;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.line{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* HERO: asymmetric split, fits the first viewport */
+.hero{display:grid;gap:32px;grid-template-columns:1.15fr .85fr;align-items:stretch;padding:28px 0 72px;min-height:min(640px,calc(100dvh - 64px))}
+.hero .copy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0;padding-top:0}
+.hero .btn{margin-top:30px}
+/* Swap this gradient for a real photo: <img class="panel" src="..." alt="..."> */
+.panel{border-radius:var(--r-card);min-height:320px;
+  background:linear-gradient(165deg,#0f2a24 0%,#0b5f49 42%,#3fa883 78%,#cdeee0 100%)}
+
+section{padding:56px 0}
+
+/* BENTO: 3 items, 3 cells (1 tall + 2 stacked), each with a different surface */
+.bento{display:grid;gap:16px;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto}
+.cell{border-radius:var(--r-card);padding:30px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+.cell p{color:inherit;opacity:.86;max-width:32em}
+.c1{grid-row:span 2;background:var(--accent);color:var(--accent-ink);min-height:360px}
+.c2{background:var(--deep);color:var(--deep-ink);min-height:170px}
+.c3{background:var(--surface);border:1px solid var(--line);min-height:170px}
+.c3 p{color:var(--mute);opacity:1}
+
+/* PRICING: two plans, annual is the wider one */
+.plans{display:grid;gap:16px;grid-template-columns:1fr 1.25fr;margin-top:28px}
+.plan{border-radius:var(--r-card);padding:30px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.plan.best{background:var(--accent-soft);border-color:var(--accent)}
+.price{font-size:2.6rem;font-weight:750;letter-spacing:-.04em;line-height:1.1;margin-top:8px}
+.price span{font-size:1rem;font-weight:500;color:var(--mute);letter-spacing:0}
+.plan ul{margin:12px 0 22px;padding-left:20px;color:var(--mute)}
+.plan .btn{margin-top:auto;align-self:flex-start}
+.tag{align-self:flex-start;font-size:.85rem;font-weight:650;color:var(--accent);background:var(--surface);border-radius:var(--r-ui);padding:4px 10px}
+.note{color:var(--mute);font-size:.95rem;margin-top:4px}
+
+/* JOIN FORM */
+.join{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:34px;max-width:620px}
+label{display:block;font-weight:600;margin:16px 0 8px}
+input[type=email]{width:100%;padding:15px 16px;border-radius:var(--r-ui);border:1.5px solid var(--field-line);background:var(--field);color:var(--ink);font:inherit}
+.chosen{color:var(--mute);margin-top:10px}
+.help{color:var(--mute);font-size:.92rem;margin-top:8px}
+form .btn{margin-top:20px}
+
+footer{padding:36px 0 56px;color:var(--mute);font-size:.9rem;border-top:1px solid var(--line);margin-top:24px}
+
+/* MOTION: fade/rise on load and on scroll into view; off under reduced motion */
+@media (prefers-reduced-motion:no-preference){
+  .rise{opacity:0;transform:translateY(18px);animation:rise .7s cubic-bezier(.16,1,.3,1) forwards}
+  .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+
+@media (max-width:767px){
+  body{font-size:16px}
+  .hero{grid-template-columns:1fr;min-height:0;padding-bottom:48px}
+  .panel{min-height:220px;order:2}
+  .bento,.plans{grid-template-columns:1fr}
+  .c1{grid-row:auto;min-height:260px}
+  .join{padding:24px}
+  .btn{width:100%}
+  .plan .btn{align-self:stretch}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>Evenly <small>(working name)</small></header>
+<nav><span class="logo">Evenly</span></nav>
 
-<h1>Go to bed on your terms.<br>Wake up glad you did.</h1>
-<p class="sub">A sleep and wake app that gives you your evening back, so bedtime feels like a choice, not a loss, and mornings feel worth getting up for.</p>
-<p><a class="btn" href="#join" data-plan="free">Get early access</a></p>
+<header class="hero">
+  <div class="copy">
+    <h1 class="rise">Go to bed on your terms. Wake up glad you did.</h1>
+    <p class="lede rise d1">Bedtime that protects your free time, and mornings worth getting up for.</p>
+    <a class="btn rise d2" href="#join" data-plan="none">Get early access</a>
+  </div>
+  <div class="panel rise d3" role="img" aria-label="Soft green gradient from deep night to morning light"></div>
+</header>
 
-<section>
-<div class="grid">
-<div class="card"><h3>Keep your “me time”</h3><p>Plan a wind-down you actually look forward to, so “one more episode” stops being the only way to feel free.</p></div>
-<div class="card"><h3>Wake up on purpose</h3><p>A gentle, rewarding start with a reason to get up. No snooze loop, no jolt.</p></div>
-<div class="card"><h3>Trust yourself again</h3><p>Track the nights you followed through, not the ones you missed. Confidence over guilt.</p></div>
-</div>
+<section class="reveal">
+  <h2>Discipline that feels good</h2>
+  <div class="bento" style="margin-top:24px">
+    <div class="cell c1"><h3>Keep your me time</h3><p>Plan a wind-down you look forward to, so one more episode stops being the only way to feel free.</p></div>
+    <div class="cell c2"><h3>Wake up on purpose</h3><p>A gentle start with a reason to get up. No snooze loop.</p></div>
+    <div class="cell c3"><h3>Trust yourself again</h3><p>Track the nights you followed through, not the ones you missed.</p></div>
+  </div>
 </section>
 
-<section>
-<h2>Pick the early-access plan you’d want</h2>
-<p><small>We’re not launched yet. You won’t be charged. Your pick helps us decide what to build.</small></p>
-<div class="grid">
-<div class="card price"><h3>Free</h3><div class="amt">$0</div><ul><li>Core bedtime and wake routine</li><li>Basic streaks</li></ul><a class="btn alt" href="#join" data-plan="free">Join free</a></div>
-<div class="card price"><h3>Plus</h3><div class="amt">$4.99<small>/mo</small></div><ul><li>Everything in Free</li><li>Wind-down and wake-up experiences</li></ul><a class="btn" href="#join" data-plan="plus_4.99">Get Plus</a></div>
-<div class="card price"><h3>Premium</h3><div class="amt">$7.99<small>/mo</small></div><ul><li>Everything in Plus</li><li>Deeper insights and personalization</li></ul><a class="btn alt" href="#join" data-plan="premium_7.99">Get Premium</a></div>
-</div>
+<section class="reveal" id="pricing">
+  <h2>Try it free for 7 days</h2>
+  <p class="note">We have not launched yet and you will not be charged. Your pick tells us which plan you would choose.</p>
+  <div class="plans">
+    <div class="plan">
+      <h3>Monthly</h3>
+      <div class="price">$2.00<span>/month</span></div>
+      <ul><li>7-day free trial</li><li>Full access</li><li>Cancel anytime</li></ul>
+      <a class="btn line" href="#join" data-plan="monthly_2">Start free trial</a>
+    </div>
+    <div class="plan best">
+      <span class="tag">Save $4 a year</span>
+      <h3>Annual</h3>
+      <div class="price">$20.00<span>/year</span></div>
+      <ul><li>7-day free trial</li><li>Full access, about $1.67 a month</li><li>Cancel anytime</li></ul>
+      <a class="btn" href="#join" data-plan="annual_20">Start free trial</a>
+    </div>
+  </div>
 </section>
 
-<section id="join">
+<section class="reveal" id="join">
 <!-- Kit form 10140117 (Sleep app waitlist). Custom fields required in Kit: plan, source -->
-<form action="https://app.kit.com/forms/10140117/subscriptions" method="post">
-<h2 style="margin-top:0">Join the early-access list</h2>
-<p class="chosen" id="chosen">Plan interest: Free</p>
-<label for="email">Email</label>
-<input id="email" type="email" name="email_address" placeholder="you@example.com" required>
-<input type="hidden" name="fields[plan]" id="plan" value="free">
-<input type="hidden" name="fields[source]" id="source" value="direct">
-<button class="btn" type="submit">Save my spot</button>
-<p><small>No spam. One email when it’s ready, plus a short question or two about your sleep habits.</small></p>
+<form class="join" action="https://app.kit.com/forms/10140117/subscriptions" method="post">
+  <h2>Join the early-access list</h2>
+  <p class="chosen" id="chosen">Plan interest: not chosen yet</p>
+  <label for="email">Email</label>
+  <input id="email" type="email" name="email_address" autocomplete="email" required aria-describedby="email-help">
+  <input type="hidden" name="fields[plan]" id="plan" value="none">
+  <input type="hidden" name="fields[source]" id="source" value="direct">
+  <p class="help" id="email-help">We send one email when it is ready, plus a short question about your sleep habits.</p>
+  <button class="btn" type="submit">Get early access</button>
 </form>
 </section>
 
-<footer>© Evenly (working name). Not medical advice. Not a treatment for sleep disorders.</footer>
+<footer>Evenly (working name). Not medical advice. Not a treatment for sleep disorders.</footer>
 </div>
+
 <script>
 (function(){
-  var labels={free:"Free",plus_4_99:"Plus ($4.99/mo)",premium_7_99:"Premium ($7.99/mo)"};
-  var names={"free":"Free","plus_4.99":"Plus ($4.99/mo)","premium_7.99":"Premium ($7.99/mo)"};
+  var names={"none":"not chosen yet","monthly_2":"Monthly ($2.00/month)","annual_20":"Annual ($20.00/year)"};
   document.querySelectorAll("[data-plan]").forEach(function(a){
     a.addEventListener("click",function(){
       var p=a.getAttribute("data-plan");
@@ -90,6 +176,11 @@ footer{padding:30px 0 50px;color:var(--mute);font-size:.88rem}
     var s=new URLSearchParams(location.search).get("src");
     if(s) document.getElementById("source").value=s.slice(0,40);
   }catch(e){}
+  var els=document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.15});
+    els.forEach(function(el){io.observe(el);});
+  }else{els.forEach(function(el){el.classList.add("in");});}
 })();
 </script>
 </body>
